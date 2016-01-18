@@ -410,5 +410,6 @@ camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-s
 
 * Increase the controller of the REST service to create 3 pods
 
-* Cgeck that the client gets a request from one of the Service running into a different pod
+* Check that the client gets a request from one of the Service running into a different pod
+
 
