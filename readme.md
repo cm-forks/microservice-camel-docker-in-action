@@ -34,9 +34,9 @@ Remarks:
      51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 ```
 
-* 
+*
 
-# Setup Docker
+# Use Docker daemon started with boot2docker or docker-machine
 
 3) Set ENV VAR of the docker daemon started locally using `docker-machine start default`
 
@@ -105,7 +105,9 @@ Remarks:
     @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
     private Endpoint httpEndpoint;
 
-14) Start the openshift / docker server
+# Use openshift v3
+
+* Use Fabric8-installer to seyup locally openshift v3 & docker daemon
 
 15) Create a demo namespace/project
 
