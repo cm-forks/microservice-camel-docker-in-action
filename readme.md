@@ -35,6 +35,7 @@
     docker run -it --name camel-cdi-microservice 192.168.99.100:5000/fabric8/cdi:1.0-SNAPSHOT
 
 
-9) Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
+9) TODO - Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
 
 
+    
