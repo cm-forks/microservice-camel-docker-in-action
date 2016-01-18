@@ -4,20 +4,27 @@
 
 ## Using JBoss Forge
 
-* Use these Camel Archetypes to create the skeleton of the project
+* Use this Camel Archetype to create the skeleton of the project which is a camel-cdi maven module
 
 ```
 mvn archetype:generate
 
-Select respectively these Camel Archetypes
-
 58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
-72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
 ```
 
-* The name of the maven modules to be created are for each project respectively :
+with these parameters
 
-The archetype camel-archetype-cdi will be used to create a Camel route sending every 5s a message to the REST service using a Netty4-HTTP Endpoint.
+```
+Detail to be used to set the maven archetype
+
+```
+Project : camel-cdi-rest
+Package : org.jboss.fuse
+Version: 1.0-SNAPSHOT
+```
+
+This archetype will be used to create a Camel route using CDI Framework to inject the Beans and start the CamelContext.
+The Apache Camel Route will send every 5s a message to the REST service using a Netty4-HTTP Endpoint as described hereafter.
 
 ```
 @ContextName("myCdiCamelContext")
@@ -97,6 +104,16 @@ Project : camel-cdi-rest
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 ```
+
+```
+mvn archetype:generate
+
+Select respectively these Camel Archetypes
+
+58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
+72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
+```
+
 
 The archetype camel-archetype-web which is a Servlet Tomcat application will expose using the Camel REST DSL a REST service to get a User Hello Message.
 The REST GET Service is defined as such : /camel/users/${id_of_the_user}/hello
