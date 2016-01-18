@@ -364,7 +364,12 @@ Hello charles! Welcome from pod : 6da09e192031
 
     mvn -Pf8-local-deploy
 
-* Update also the properties if the camel)rest-client pom file too
+* Update also the properties if the camel-rest-client pom file too
+
+    <fabric8.label.component>${project.artifactId}</fabric8.label.component>
+    <fabric8.label.container>java</fabric8.label.container>
+    <fabric8.label.group>demo</fabric8.label.group>
+    <fabric8.iconRef>camel</fabric8.iconRef>
 
 * As we will use the Kubernetes `hellorest` service, we will change the url of the client in order to contact the Kubernetes Service / Loadbalancer to dispatch the request of the client to one of the pods running the Camel REST Service
 
