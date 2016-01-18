@@ -6,14 +6,16 @@
 
 * Use the Camel Archetypes to create the skeleton of the project
 
+```
     mvn archetype:generate
 
     Select respectively these Camel Archetypes
 
     58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
     72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
+```
 
-* Next run the fabric8-setup forge cmd to add the Docker/Fabric8 plugins and properties
+* Next run the `fabric8-setup` forge cmd to add the Docker/Fabric8 plugins and properties
 
 Remarks:
 - Some modifications have been required due to an issue with the fabric8-forge cmd
@@ -23,13 +25,16 @@ Remarks:
 
 * Use the iPaas Archetypes to create the skeleton of the project
 
+```
     mvn archetype:generate
 
      Select respectively these Camel Archetypes
 
      19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
      51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
+```
 
+* 
 
 # Setup Docker
 
