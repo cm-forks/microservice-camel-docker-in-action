@@ -4,7 +4,7 @@
 
 ## Using JBoss Forge
 
-* Use the Camel Archetypes to create the skeleton of the project
+* Use these Camel Archetypes to create the skeleton of the project
 
 ```
     mvn archetype:generate
@@ -15,7 +15,26 @@
     72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
 ```
 
-* Next run the `fabric8-setup` forge cmd to add the Docker/Fabric8 plugins and properties
+* The name of the maven modules to be created are for each project respectively :
+
+The archetype camel-archetype-cdi will be used to create a Camel route sending every 5s a message to the REST service using a Netty4-HTTP Endpoint.
+
+```
+Project : camel-cdi-rest
+Package : org.jboss.fuse
+Version: 1.0-SNAPSHOT
+```
+
+The archetype camel-archetype-web which is a Servlet Tomcat application will expose using the Camel REST DSL a REST service to get a User Hello Message.
+The REST GET Service is defined as such : /camel/users/${id_of_the_user}/hello
+This message will be returned : "Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")
+
+```
+Project : camel-rest
+Package : org.jboss.fuse
+Version: 1.0-SNAPSHOT
+```
+* Next run the `fabric8-setup` forge cmd to add the Docker/Fabric8 plugins and the properties required
 
 Remarks:
 - Some modifications have been required due to an issue with the fabric8-forge cmd
@@ -36,6 +55,10 @@ Remarks:
      19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
      51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 ```
+
+## Code modification
+
+* Add a Camel Netty4-http client to call from the camel-cdi-rest project, the REST service deployed by the camel-rest project
 
 *
 
