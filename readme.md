@@ -1,5 +1,8 @@
 # INSTRUCTIONS
 
+The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one containing the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
+project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
+
 # Project creation
 
 ## iPaas Archetype
