@@ -355,6 +355,7 @@ Hello charles! Welcome from pod : 6da09e192031
 
     export KUBERNETES_DOMAIN=vagrant.f8
     export DOCKER_HOST=tcp://vagrant.f8:2375
+    export DOCKER_IP=vagrant.f8
 
 * We will build the project using the following profile
 
@@ -407,14 +408,33 @@ camel-rest-client    camel-rest-client-demo.vagrant.f8              camel-rest-c
 camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-service
 ```
 
-* Look to the log of the pod of the camel-rest-client
+* Look to the log of the pod of the camel-rest-client to control that you get responses
 
 ```
-
+2016-01-18 19:37:25,469 [main           ] INFO  CdiCamelContext                - Route: route1 started and consuming from: Endpoint[timer://foo?period=5000]
+2016-01-18 19:37:25,521 [main           ] INFO  Bootstrap                      - WELD-ENV-002003: Weld SE container STATIC_INSTANCE initialized
+2016-01-18 19:37:26,767 [ClientTCPWorker] INFO  route1                         - Response : Hello James Strachan! Welcome from pod : camel-rest-service-8pbq9
+2016-01-18 19:37:31,494 [ClientTCPWorker] INFO  route1                         - Response : Hello Claus Ibsen! Welcome from pod : camel-rest-service-8pbq9
+2016-01-18 19:37:36,490 [ClientTCPWorker] INFO  route1                         - Response : Hello Nandan Joshi! Welcome from pod : camel-rest-service-8pbq9
 ```
 
 * Increase the controller of the REST service to create 3 pods
 
 * Check that the client gets a request from one of the Service running into a different pod
+
+```
+2016-01-18 19:39:06,534 [ClientTCPWorker] INFO  route1                         - Response : Hello Claus Ibsen! Welcome from pod : camel-rest-service-zyzec
+2016-01-18 19:39:11,532 [ClientTCPWorker] INFO  route1                         - Response : Hello Rob Davies! Welcome from pod : camel-rest-service-f7fw7
+2016-01-18 19:39:16,522 [ClientTCPWorker] INFO  route1                         - Response : Hello James Strachan! Welcome from pod : camel-rest-service-8pbq9
+```
+
+# Clean project
+
+```
+oc delete pods -l group=demo
+oc delete services -l group=demo
+oc delete route -l group=demo
+oc delete rc -l group=demo
+```
 
 
