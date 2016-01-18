@@ -18,7 +18,7 @@
 
     docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
-5) Build and push the images
+5) Build and push the image of the Camel Web Example
 
     docker run -it -p 8080:8080 -p 8778:8778 --name camel-web-microservice 192.168.99.100:5000/fabric8/web:1.0-SNAPSHOT
 
@@ -56,6 +56,11 @@
 11) You can access now to your Camel routes
 
    http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
+
+12) Use the Camel CDI Rest client
+
+    Please change the IP adress of the Netty4 HTTP url within the Camel Route
+    docker run -it --name camel-cdi-rest-microservice 192.168.99.100:5000/fabric8/cdi-rest:1.0-SNAPSHOT
 
 9) TODO - Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
 
