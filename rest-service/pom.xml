@@ -8,7 +8,7 @@
         <groupId>org.jboss.fuse</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>rest</artifactId>
+    <artifactId>rest-service</artifactId>
     <packaging>war</packaging>
 
 

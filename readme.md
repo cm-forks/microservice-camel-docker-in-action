@@ -13,14 +13,9 @@ project. They both will be created as Microservice as they will be able to run i
 mvn archetype:generate
 
 19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
-```
 
-with these parameters
+Using these parameters
 
-```
-Detail to be used to set the maven archetype
-
-```
 Project : camel-rest-client
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT

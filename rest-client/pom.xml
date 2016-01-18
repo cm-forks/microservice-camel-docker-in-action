@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jboss.fuse</groupId>
-  <artifactId>cdi-rest</artifactId>
+  <artifactId>rest-client</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>JBoss Fuse :: Microservice :: Camel CDI Rest </name>
 
@@ -13,7 +13,6 @@
     <docker.maven.plugin.version>0.13.6</docker.maven.plugin.version>
 
     <docker.assemblyDescriptorRef>artifact-with-dependencies</docker.assemblyDescriptorRef>
-    <!--<docker.from>docker.io/fabric8/java</docker.from>-->
     <docker.from>fabric8/s2i-java:1.2</docker.from>
     <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
     <docker.port.container.jolokia>8778</docker.port.container.jolokia>
