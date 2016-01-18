@@ -36,7 +36,7 @@ public class MyRoutes extends RouteBuilder {
         // you can configure the route rule with Java DSL here
 
         from(inputEndpoint)
-            .setHeader("user").method(someBean,"getRandomSales")
+            .setHeader("user").method(someBean,"getRandomUser")
             .setHeader("CamelHttpPath").simple("/camel/users/${header.user}/hello")
             .to(httpEndpoint)
             .log("Response : ${body}");

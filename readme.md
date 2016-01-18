@@ -7,17 +7,90 @@
 * Use these Camel Archetypes to create the skeleton of the project
 
 ```
-    mvn archetype:generate
+mvn archetype:generate
 
-    Select respectively these Camel Archetypes
+Select respectively these Camel Archetypes
 
-    58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
-    72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
+58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
+72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
 ```
 
 * The name of the maven modules to be created are for each project respectively :
 
 The archetype camel-archetype-cdi will be used to create a Camel route sending every 5s a message to the REST service using a Netty4-HTTP Endpoint.
+
+```
+@ContextName("myCdiCamelContext")
+public class MyRoutes extends RouteBuilder {
+
+    @Inject
+    @Uri("timer:foo?period=5000")
+    private Endpoint inputEndpoint;
+
+    @Inject
+    /** Local **/
+    //@Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
+
+    /** Docker Container **/
+    // @Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
+
+    /** Pod Container + Kubernetes Service  **/
+    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    private Endpoint httpEndpoint;
+
+    @Inject
+    private SomeBean someBean;
+
+    @Override
+    public void configure() throws Exception {
+        // you can configure the route rule with Java DSL here
+
+        from(inputEndpoint)
+            .setHeader("user").method(someBean,"getRandomUser")
+            .setHeader("CamelHttpPath").simple("/camel/users/${header.user}/hello")
+            .to(httpEndpoint)
+            .log("Response : ${body}");
+```
+
+The url of the endpoint will be changed according to the environment where we will run the route: local, docker daemon or openshift v3.
+
+The method `getRandomUser` has been added within the someBean class to generate from a list, the user saying Hello
+
+```
+@Singleton
+@Named("someBean")
+public class SomeBean {
+
+    static List<String> sales;
+
+    public SomeBean() {
+        sales = new ArrayList<String>();
+        sales.add("James Strachan");
+        sales.add("Claus Ibsen");
+        sales.add("Hiram Chirino");
+        sales.add("Jeff Bride");
+        sales.add("Chad Darby");
+        sales.add("Rachel Cassidy");
+        sales.add("Bernard Tison");
+        sales.add("Nandan Joshi");
+        sales.add("Rob Davies");
+        sales.add("Guillaume Nodet");
+        sales.add("Marc Little");
+        sales.add("Mario Fusco");
+        sales.add("James Hetfield");
+        sales.add("Kirk Hammett");
+        sales.add("Steve Perry");
+    }
+
+    private int counter;
+
+    public static String getRandomUser() {
+        //0-11
+        int index = new Random().nextInt(sales.size());
+        return sales.get(index);
+    }
+```
+Detail to be used to set the maven archetype
 
 ```
 Project : camel-cdi-rest

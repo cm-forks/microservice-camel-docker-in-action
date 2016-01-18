@@ -33,7 +33,7 @@ public class SomeBean {
 
     private int counter;
 
-    public static String getRandomSales() {
+    public static String getRandomUser() {
         //0-11
         int index = new Random().nextInt(sales.size());
         return sales.get(index);
