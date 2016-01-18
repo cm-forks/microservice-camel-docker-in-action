@@ -159,7 +159,7 @@ Version: 1.0-SNAPSHOT
 
 # Use Docker daemon started with boot2docker or docker-machine
 
-* Laucnh docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
+* Launch docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
 
 * Within a terminal whre your development project has been created, set the ENV variables required to access and communicate with the
   Docker daemon
