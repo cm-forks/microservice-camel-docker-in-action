@@ -62,7 +62,29 @@
     Please change the IP adress of the Netty4 HTTP url within the Camel Route
     docker run -it --name camel-cdi-rest-microservice 192.168.99.100:5000/fabric8/cdi-rest:1.0-SNAPSHOT
 
-9) TODO - Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
+13) Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
 
+    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    private Endpoint httpEndpoint;
 
+14) Start the openshift / docker server
+
+15) Create a demo namespace/project
+
+    oc login https://172.28.128.4:8443
+    oc new-project demo
+
+16) Build and deploy the pod of Camel REST Service (Tomcat)
+
+    export KUBERNETES_DOMAIN=vagrant.f8
+    export DOCKER_HOST=tcp://vagrant.f8:2375
+    mvn -Pf8-build
+    mvn -Pf8-local-deploy
+
+17) Build and deploy the pod of Camel REST Client
+
+    export KUBERNETES_DOMAIN=vagrant.f8
+    export DOCKER_HOST=tcp://vagrant.f8:2375
+    mvn -Pf8-build
+    mvn -Pf8-local-deploy
 

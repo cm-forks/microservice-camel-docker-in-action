@@ -20,7 +20,7 @@ public class CamelRestRoute extends RouteBuilder {
                 .process(new Processor() {
                     public void process(Exchange exchange) throws Exception {
                         String id = exchange.getIn().getHeader("id", String.class);
-                        exchange.getOut().setBody("Hello " + id + "! Welcome on board.");
+                        exchange.getOut().setBody("Hello " + id + "! Welcome from pod : " + System.getenv("HOSTNAME") );
                     }
                 });
 

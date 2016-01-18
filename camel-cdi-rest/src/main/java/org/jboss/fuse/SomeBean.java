@@ -33,10 +33,6 @@ public class SomeBean {
 
     private int counter;
 
-    public String someMethod(String body) {
-        return "Grenoble " + ++counter;
-    }
-
     public static String getRandomSales() {
         //0-11
         int index = new Random().nextInt(sales.size());
