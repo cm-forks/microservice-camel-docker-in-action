@@ -68,34 +68,35 @@ The method `getRandomUser` has been added within the someBean class to generate 
 @Named("someBean")
 public class SomeBean {
 
-    static List<String> sales;
+    static List<String> users;
 
     public SomeBean() {
-        sales = new ArrayList<String>();
-        sales.add("James Strachan");
-        sales.add("Claus Ibsen");
-        sales.add("Hiram Chirino");
-        sales.add("Jeff Bride");
-        sales.add("Chad Darby");
-        sales.add("Rachel Cassidy");
-        sales.add("Bernard Tison");
-        sales.add("Nandan Joshi");
-        sales.add("Rob Davies");
-        sales.add("Guillaume Nodet");
-        sales.add("Marc Little");
-        sales.add("Mario Fusco");
-        sales.add("James Hetfield");
-        sales.add("Kirk Hammett");
-        sales.add("Steve Perry");
+        users = new ArrayList<String>();
+        users.add("James Strachan");
+        users.add("Claus Ibsen");
+        users.add("Hiram Chirino");
+        users.add("Jeff Bride");
+        users.add("Chad Darby");
+        users.add("Rachel Cassidy");
+        users.add("Bernard Tison");
+        users.add("Nandan Joshi");
+        users.add("Rob Davies");
+        users.add("Guillaume Nodet");
+        users.add("Marc Little");
+        users.add("Mario Fusco");
+        users.add("James Hetfield");
+        users.add("Kirk Hammett");
+        users.add("Steve Perry");
     }
 
     private int counter;
 
     public static String getRandomUser() {
         //0-11
-        int index = new Random().nextInt(sales.size());
-        return sales.get(index);
+        int index = new Random().nextInt(users.size());
+        return users.get(index);
     }
+
 ```
 
 The next project will be designed using the camel web archetype which is a Servlet Tomcat application and will be used to expose using the Camel REST DSL
@@ -134,7 +135,7 @@ Add the `<package>` XML tag within the `Camel XML Bean file`
  <camelContext xmlns="http://camel.apache.org/schema/spring">
     <package>org.jboss.fuse</package>
   </camelContext>
-```
+``
 
 The detail to be used to set the maven archetype is defined hereafter:
 
@@ -220,106 +221,194 @@ mvn jetty:run
 
 ```
 http GET http://localhost:8080/camel/users/charles/hello
+HTTP/1.1 200 OK
+Date: Mon, 18 Jan 2016 17:39:24 GMT
+Server: Jetty(9.2.11.v20150529)
+Transfer-Encoding: chunked
+
+Hello charles! Welcome from pod : null
 
 ```
-# Use Docker daemon started with boot2docker or docker-machine
+# Use a Docker daemon started with boot2docker or docker-machine
 
-* Launch docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
+* Launch docker-machine or boot2docker in a terminal and start the default virtual machine using this command `docker-machine start default`
 
-* Within a terminal whre your development project has been created, set the ENV variables required to access and communicate with the
-  Docker daemon
+* Within the terminals where your development projects has been created, set the ENV variables required to access and communicate with the
+  Docker daemon by executing this command `eval $(docker-machine env default)`.
+
+* Add the `DOCKER_IP` and `DOCKER_REGISTRY` env variables. The IP address could be different on your machine
 
 ```
-    eval $(docker-machine env default)
+    export DOCKER_IP=192.168.99.100
+    export DOCKER_REGISTRY="192.168.99.100:5000"
+```
+
+* Check that the DOCKER env variables have been created
+
+```
+    export | grep 'DOCKER'
     export DOCKER_TLS_VERIFY="1"
     export DOCKER_HOST="tcp://192.168.99.100:2376"
     export DOCKER_CERT_PATH="/Users/chmoulli/.docker/machine/machines/default"
     export DOCKER_MACHINE_NAME="default"
-    export DOCKER_REGISTRY="192.168.99.100:5000"
 ```
 
-* Add the DOCKER_IP env variable
-
-```
-    export DOCKER_IP=192.168.99.100
-```
-
-* Redirect the traffic from the Host to the Docker Virtual Machine
+* Redirect the traffic from the Host to the Docker Virtual Machine as we will access the service from the host or within a container
 
 ```
     sudo route -n delete 172.0.0.0/8
     sudo route -n add 172.0.0.0/8 $DOCKER_IP
 ```
 
-4) Install a docker registry when using Docker with boot2docker or docker-machine as we have to push our build (= docker tar files) to a local registry
+* If this is not yet the case, install a docker registry within your docker daemon as we have to push our build (= docker tar files) to this local registry
 
     docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
-5) Build and push the image of the Camel Rest Example
+* As we will publish our image into a local registry and not on docker.io, we will add/change the following properties of the pom.xml file of the 2 projects
 
-    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-microservice 192.168.99.100:5000/fabric8/rest:1.0-SNAPSHOT
+    <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
+    <docker.registryPrefix>${env.DOCKER_REGISTRY}/</docker.registryPrefix>
 
-6) Find IP address of the docker container
+* Now, you can build the docker image of the Camel Rest Service and push it to the registry by executing these commands within the terminal of the `camel-rest-service` project
+
+    mvn clean install docker:build
+    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-service 192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT
+
+* Find the IP address of the docker container created as we whave to change this address for the URL of the client
 
     docker ps --filter="name=rest" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
 
-7)  Change the url of the camel CDI Route to point to this Hostname
+* Verify that the docker container is running and the port assigned
 
-    @Uri("netty4-http:http://DOCKER_CONTAINER_IPADDRESS:8080/camel/hello?keepalive=false&disconnect=true")
+```
+docker ps --filter="name=rest"
+CONTAINER ID        IMAGE                                                         COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+6da09e192031        192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT   "/bin/sh -c /opt/tomc"   8 minutes ago       Up 8 minutes        0.0.0.0:8080->8080/tcp, 0.0.0.0:8778->8778/tcp   camel-rest-service
+``
 
-9) Build the Image of the Camel CDI and create the docker container
+*  Change the url of the netty4-http endpoint of the camel REST Client to point to this Hostname
+
+    @Uri("netty4-http:http://DOCKER_CONTAINER_IPADDRESS:8080?keepalive=false&disconnect=true")
+
+* Test it using HTTPie or curl. The return message mentions the POD name but the id corresponds to the docker container created
+
+```
+http GET http://172.17.0.2:8080/camel/users/charles/hello
+HTTP/1.1 200 OK
+Date: Mon, 18 Jan 2016 17:57:55 GMT
+Server: Apache-Coyote/1.1
+Transfer-Encoding: chunked
+
+Hello charles! Welcome from pod : 6da09e192031
+```
+
+# We will now deploy the Camel REST client as a microcontainer within the Docker container. So, build the Image and create the container as such
 
     mvn clean install docker:build
+    docker run -it --name camel-rest-client 192.168.99.100:5000/fabric8/camel-rest-client:1.0-SNAPSHOT
 
-    docker run -it --name camel-cdi-microservice 192.168.99.100:5000/fabric8/cdi:1.0-SNAPSHOT
+# You should get from the console the messages received from the REST Service
 
-10) Connect to the Tomcat console and add the hawtio war
+    2016-01-18 18:06:22,201 [main           ] INFO  CdiCamelContext                - Route: route1 started and consuming from: Endpoint[timer://foo?period=5000]
+    2016-01-18 18:06:22,268 [main           ] INFO  Bootstrap                      - WELD-ENV-002003: Weld SE container STATIC_INSTANCE initialized
+    2016-01-18 18:06:23,468 [ClientTCPWorker] INFO  route1                         - Response : Hello Rob Davies! Welcome from pod : 6da09e192031
 
-    http://172.17.0.7:8080/manager/html
+# Connect to the Tomcat console and add the hawtio war to discover the Camel Plugin
+
+    http://172.17.0.2:8080/manager/html
 
     The IP address depends on the address generated by the docker container
     User / password : admin/admin
 
     Install the hawtio-default.war file available here : http://repo1.maven.org/maven2/io/hawt/hawtio-default/1.4.59/hawtio-default-1.4.59.war
 
-11) You can access now to your Camel routes
+# You can access now to your Camel routes
 
     http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
 
-12) Use the Camel CDI Rest client
+# Use OpenShift v3 instead of the Docker Container to use Kubernetes Service
 
-    Please change the IP adress of the Netty4 HTTP url within the Camel Route
-    docker run -it --name camel-cdi-rest-microservice 192.168.99.100:5000/fabric8/cdi-rest:1.0-SNAPSHOT
+* Install the [https://github.com/fabric8io/fabric8-installer](fabric8-installer) project and run `vagrant up` command within the folder vagrant/openshift
 
-13) Add fabric8 properties to generate the Kubernetes json file containing the service to be exposed
-
-    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
-    private Endpoint httpEndpoint;
-
-# Use openshift v3
-
-* Use Fabric8-installer to seyup locally openshift v3 & docker daemon
-
-15) Create a demo namespace/project
+* Using the OpenShift client tool, log to the server and create a demo namespace/project
 
     oc login https://172.28.128.4:8443
     oc new-project demo
 
-16) Build and deploy the pod of Camel REST Service (Tomcat)
+* Edit the pom file of the `camel-rest-service` project and update the Fabric8 properties.
+* We will create a Kubernetes Service `hellosrest` and assign the external/internal port numbers and setup the loadbalancing type
+
+    <fabric8.service.name>hellorest</fabric8.service.name>
+    <fabric8.service.port>9090</fabric8.service.port>
+    <fabric8.service.containerPort>8080</fabric8.service.containerPort>
+    <fabric8.service.type>LoadBalancer</fabric8.service.type>
+
+* Next, we will define the labels, container type and add a reference to the camel icon
+
+    <fabric8.label.component>${project.artifactId}</fabric8.label.component>
+    <fabric8.label.container>tomcat</fabric8.label.container>
+    <fabric8.label.group>demo</fabric8.label.group>
+    <fabric8.iconRef>camel</fabric8.iconRef>
+
+* We can now build a new docker image and generate the kubernetes json file describing the pod / application to be deployed.
+* First, we will add new env variables to define the Kubernetes domain & openshift server to call
+
+    export KUBERNETES_DOMAIN=vagrant.f8
+    export DOCKER_HOST=tcp://vagrant.f8:2375
+
+* We will build the project using the following profile
+
+    mvn -Pf8-build
+
+* Another command also exist to build and deploy the project
+
+    mvn -Pf8-local-deploy
+
+* Update also the properties if the camel)rest-client pom file too
+
+* As we will use the Kubernetes `hellorest` service, we will change the url of the client in order to contact the Kubernetes Service / Loadbalancer to dispatch the request of the client to one of the pods running the Camel REST Service
+
+    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    private Endpoint httpEndpoint;
+
+* Build and deploy the pod of Camel REST Client
 
     export KUBERNETES_DOMAIN=vagrant.f8
     export DOCKER_HOST=tcp://vagrant.f8:2375
     mvn -Pf8-build
     mvn -Pf8-local-deploy
 
-17) Build and deploy the pod of Camel REST Client
+* Verify in openshift / Fabric console that the pods, service, controller have been created
 
-    export KUBERNETES_DOMAIN=vagrant.f8
-    export DOCKER_HOST=tcp://vagrant.f8:2375
-    mvn -Pf8-build
-    mvn -Pf8-local-deploy
+```
+oc get pods
+NAME                       READY     STATUS    RESTARTS   AGE
+camel-rest-client-4ej1q    1/1       Running   0          46s
+camel-rest-service-4u9v9   1/1       Running   0          3m
 
-18) Verify in openshift / Fabric console
+ oc get service
+NAME                 CLUSTER_IP      EXTERNAL_IP   PORT(S)    SELECTOR                                                                                                      AGE
+camel-rest-client    None            <none>        1/TCP      component=camel-rest-client,container=java,group=quickstarts,project=camel-rest-client,provider=fabric8       2m
+camel-rest-service   172.30.65.128   <none>        9101/TCP   component=camel-rest-service,container=tomcat,group=quickstarts,project=camel-rest-service,provider=fabric8   5m
 
-19) Increase the controller of the REST service to support loadbalancing
+oc get rc
+CONTROLLER           CONTAINER(S)         IMAGE(S)                                                      SELECTOR                                                                                                                           REPLICAS   AGE
+camel-rest-client    camel-rest-client    192.168.99.100:5000/fabric8/camel-rest-client:1.0-SNAPSHOT    component=camel-rest-client,container=java,group=quickstarts,project=camel-rest-client,provider=fabric8,version=1.0-SNAPSHOT       1          2m
+camel-rest-service   camel-rest-service   192.168.99.100:5000/fabric8/camel-rest-service:1.0-SNAPSHOT   component=camel-rest-service,container=tomcat,group=quickstarts,project=camel-rest-service,provider=fabric8,version=1.0-SNAPSHOT   1          5m
+
+oc get route
+NAME                 HOST/PORT                            PATH      SERVICE              LABELS    TLS TERMINATION
+camel-rest-client    camel-rest-client-demo.vagrant.f8              camel-rest-client
+camel-rest-service   camel-rest-service-demo.vagrant.f8             camel-rest-service
+```
+
+* Look to the log of the pod of the camel-rest-client
+
+```
+
+```
+
+* Increase the controller of the REST service to create 3 pods
+
+* Cgeck that the client gets a request from one of the Service running into a different pod
 

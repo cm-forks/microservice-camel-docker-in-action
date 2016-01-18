@@ -7,36 +7,36 @@ import java.util.List;
 import java.util.Random;
 
 @Singleton
-@Named("someBean")
+@Named("counterBean")
 public class SomeBean {
 
-    static List<String> sales;
+    static List<String> users;
 
     public SomeBean() {
-        sales = new ArrayList<String>();
-        sales.add("James Strachan");
-        sales.add("Claus Ibsen");
-        sales.add("Hiram Chirino");
-        sales.add("Jeff Bride");
-        sales.add("Chad Darby");
-        sales.add("Rachel Cassidy");
-        sales.add("Bernard Tison");
-        sales.add("Nandan Joshi");
-        sales.add("Rob Davies");
-        sales.add("Guillaume Nodet");
-        sales.add("Marc Little");
-        sales.add("Mario Fusco");
-        sales.add("James Hetfield");
-        sales.add("Kirk Hammett");
-        sales.add("Steve Perry");
+        users = new ArrayList<String>();
+        users.add("James Strachan");
+        users.add("Claus Ibsen");
+        users.add("Hiram Chirino");
+        users.add("Jeff Bride");
+        users.add("Chad Darby");
+        users.add("Rachel Cassidy");
+        users.add("Bernard Tison");
+        users.add("Nandan Joshi");
+        users.add("Rob Davies");
+        users.add("Guillaume Nodet");
+        users.add("Marc Little");
+        users.add("Mario Fusco");
+        users.add("James Hetfield");
+        users.add("Kirk Hammett");
+        users.add("Steve Perry");
     }
 
     private int counter;
 
     public static String getRandomUser() {
         //0-11
-        int index = new Random().nextInt(sales.size());
-        return sales.get(index);
+        int index = new Random().nextInt(users.size());
+        return users.get(index);
     }
 
 }
