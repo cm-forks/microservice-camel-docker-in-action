@@ -2,14 +2,14 @@
 
 # Project creation
 
-## Using JBoss Forge
+## iPaas Archetype
 
 * Use this Camel Archetype to create the skeleton of the project which is a camel-cdi maven module
 
 ```
 mvn archetype:generate
 
-58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
+19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
 ```
 
 with these parameters
@@ -109,6 +109,11 @@ Version: 1.0-SNAPSHOT
 The next project will be designed using the camel web archetype which is a Servlet Tomcat application and will be used to expose using the Camel REST DSL
 a REST service to get a User Hello Message.
 
+```
+mvn archetype:generate
+51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
+```
+
 The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message wil lbe reurned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
 
 The detail to be used to set the maven archetype is defined hereafter:
@@ -119,6 +124,40 @@ Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 ```
 
+Remarks : We will use the following images (s2i-java for the camel cdi project and tomcat-8.0 for the camel web project) if this is not yet the case
+
+```
+      <docker.from>fabric8/s2i-java:1.2</docker.from>
+      <docker.from>fabric8/tomcat-8.0</docker.from>
+```
+
+## Using JBoss Forge
+
+* Instead of iPaas Archetypes, we will use the standard Camel Archetypes to create the skeleton of the project and next we will run the JBoss Forge command to setup the project
+
+```
+mvn archetype:generate
+58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
+
+with these parameters
+
+Project : camel-cdi-rest
+Package : org.jboss.fuse
+Version: 1.0-SNAPSHOT
+```
+and
+
+```
+mvn archetype:generate
+19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
+
+with these parameters
+
+Project : camel-cdi-rest
+Package : org.jboss.fuse
+Version: 1.0-SNAPSHOT
+
+```
 * Next, we will run the `fabric8-setup` forge commands within each maven module created. This command will to add the `Docker/Fabric8 maven plugins` and will update the maven properties with
   the information required by the maven plugins.
 
@@ -142,19 +181,6 @@ Version: 1.0-SNAPSHOT
 ```
       <docker.from>fabric8/s2i-java:1.2</docker.from>
       <docker.from>fabric8/tomcat-8.0</docker.from>
-```
-
-## iPaas Archetype
-
-* Instead of JBoss Forge, we will use the iPaas Archetypes to create the skeleton of the project as it already contain the required informations
-
-```
-    mvn archetype:generate
-
-     Select respectively these Camel Archetypes
-
-     19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
-     51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 ```
 
 # Use Docker daemon started with boot2docker or docker-machine
