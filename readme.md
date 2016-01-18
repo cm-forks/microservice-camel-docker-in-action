@@ -16,6 +16,8 @@ mvn archetype:generate
 
 Using these parameters
 
+Archetype Version : 2.2.88
+Archetype name : cdi-camel-http-archetype
 Project : camel-rest-client
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
@@ -99,7 +101,40 @@ public class SomeBean {
 The next project will be designed using the camel web archetype which is a Servlet Tomcat application and will be used to expose using the Camel REST DSL
 a REST service to get a User Hello Message.
 
-The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message wil lbe returned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
+The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message will be returned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
+
+Here is the syntax of the Camel Route to be used
+
+```
+public class CamelRestRoute extends RouteBuilder {
+
+    private static final String HOST = "0.0.0.0";
+    private static final String PORT = "8080";
+
+    @Override public void configure() throws Exception {
+
+        restConfiguration().component("servlet").host(HOST).setPort(PORT);
+
+        // use the rest DSL to define the rest services
+        rest("/users/")
+                .get("{id}/hello")
+                .route()
+                .process(new Processor() {
+                    public void process(Exchange exchange) throws Exception {
+                        String id = exchange.getIn().getHeader("id", String.class);
+                        exchange.getOut().setBody("Hello " + id + "! Welcome from pod : " + System.getenv("HOSTNAME") );
+                    }
+                });
+
+```
+
+Add the `<package>` XML tag within the `Camel XML Bean file`
+
+```
+ <camelContext xmlns="http://camel.apache.org/schema/spring">
+    <package>org.jboss.fuse</package>
+  </camelContext>
+```
 
 The detail to be used to set the maven archetype is defined hereafter:
 
@@ -107,6 +142,8 @@ The detail to be used to set the maven archetype is defined hereafter:
 mvn archetype:generate
 51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 
+Archetype Version : 2.2.88
+Archetype name : war-camel-servlet-archetype
 Project : camel-rest-service
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
@@ -171,6 +208,20 @@ Version: 1.0-SNAPSHOT
       <docker.from>fabric8/tomcat-8.0</docker.from>
 ```
 
+# Run locally the MicroServices
+
+* Open 2 terminal and move to the projects; camel-rest-client and camel-rest-service
+* Launch the REST Service
+
+```
+mvn jetty:run
+```
+* Test it using curl or HTTPie tool
+
+```
+http GET http://localhost:8080/camel/users/charles/hello
+
+```
 # Use Docker daemon started with boot2docker or docker-machine
 
 * Launch docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
