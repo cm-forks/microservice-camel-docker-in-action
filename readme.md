@@ -1,5 +1,30 @@
-1) Run fabric8-setup forge cmd
-2) Move <name> and <from> tags within the docker configuration of the maven plugin and change to the version 0.13.6
+# INSTRUCTIONS
+
+# Project creation
+
+## Using JBoss Forge
+
+* Use the Camel Archetypes to create the skeleton of the project
+
+    mvn archetype:generate
+
+    Select respectively these Camel Archetypes
+
+    58: remote -> org.apache.camel.archetypes:camel-archetype-cdi (Creates a new Camel project using CDI.)
+    72: remote -> org.apache.camel.archetypes:camel-archetype-web (Creates a new Camel web project that deploys the Camel routes as a WAR)
+
+* Next run the fabric8-setup forge cmd to add the Docker/Fabric8 plugins and properties
+
+Remarks:
+- Some modifications have been required due to an issue with the fabric8-forge cmd
+- Move <name> and <from> tags within the docker configuration of the maven plugin and change to the version 0.13.6
+
+## iPaas Archetype
+
+
+
+# Setup Docker
+
 3) Set ENV VAR of the docker daemon started locally using `docker-machine start default`
 
     export DOCKER_TLS_VERIFY="1"
