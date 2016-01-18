@@ -21,6 +21,14 @@ Remarks:
 
 ## iPaas Archetype
 
+* Use the iPaas Archetypes to create the skeleton of the project
+
+    mvn archetype:generate
+
+     Select respectively these Camel Archetypes
+
+     19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
+     51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 
 
 # Setup Docker
