@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jboss.fuse</groupId>
-  <artifactId>rest-client</artifactId>
+  <artifactId>camel-rest-client</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>JBoss Fuse :: Microservice :: Camel CDI Rest </name>
+  <name>JBoss Fuse :: Microservice :: Camel Rest Client - CDI</name>
 
   <properties>
     <fabric8.version>2.2.88</fabric8.version>
@@ -137,27 +137,6 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
       </plugin>
-<!--      <plugin>
-        <groupId>org.jolokia</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <version>${docker.maven.plugin.version}</version>
-        <configuration>
-          <images>
-            <image>
-              <name>${docker.image}</name>
-              <build>
-                <from>${docker.from}</from>
-                <env>
-                  <JAVA_MAIN_CLASS>org.apache.camel.cdi.Main</JAVA_MAIN_CLASS>
-                </env>
-                <assembly>
-                  <descriptorRef>${docker.assemblyDescriptorRef}</descriptorRef>
-                </assembly>
-              </build>
-            </image>
-          </images>
-        </configuration>
-      </plugin>-->
 
       <plugin>
         <groupId>org.jolokia</groupId>

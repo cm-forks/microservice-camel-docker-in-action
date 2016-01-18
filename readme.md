@@ -103,12 +103,11 @@ The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello`
 
 The detail to be used to set the maven archetype is defined hereafter:
 
-
 ```
 mvn archetype:generate
 51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
 
-Project : camel-rest
+Project : camel-rest-service
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 ```
@@ -130,7 +129,7 @@ mvn archetype:generate
 
 with these parameters
 
-Project : camel-cdi-rest
+Project : camel-rest-client
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 ```
@@ -142,7 +141,7 @@ mvn archetype:generate
 
 with these parameters
 
-Project : camel-cdi-rest
+Project : camel-rest-service
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 
