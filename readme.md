@@ -88,3 +88,7 @@
     mvn -Pf8-build
     mvn -Pf8-local-deploy
 
+18) Verify in openshift / Fabric console
+
+19) Increase the controller of the REST service to support loadbalancing
+
