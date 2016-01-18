@@ -20,6 +20,9 @@
 Remarks:
 - Some modifications have been required due to an issue with the fabric8-forge cmd
 - Move <name> and <from> tags within the docker configuration of the maven plugin and change to the version 0.13.6
+- Use the fabric8/S2-i image instead of the fabric8/java image
+
+      <docker.from>fabric8/s2i-java:1.2</docker.from>
 
 ## iPaas Archetype
 
@@ -38,49 +41,54 @@ Remarks:
 
 # Use Docker daemon started with boot2docker or docker-machine
 
-3) Set ENV VAR of the docker daemon started locally using `docker-machine start default`
+* Laucnh docker-machine in a terminal and start the default virtual machine using this command `docker-machine start default`
 
+* Within a terminal whre your development project has been created, set the ENV variables required to access and communicate with the
+  Docker daemon
+
+```
+    eval $(docker-machine env default)
     export DOCKER_TLS_VERIFY="1"
     export DOCKER_HOST="tcp://192.168.99.100:2376"
     export DOCKER_CERT_PATH="/Users/chmoulli/.docker/machine/machines/default"
     export DOCKER_MACHINE_NAME="default"
     export DOCKER_REGISTRY="192.168.99.100:5000"
+```
+
+* Add the DOCKER_IP env variable
+
+```
     export DOCKER_IP=192.168.99.100
+```
 
-    eval $(docker-machine env default)
+* Redirect the traffic from the Host to the Docker Virtual Machine
 
+```
     sudo route -n delete 172.0.0.0/8
     sudo route -n add 172.0.0.0/8 $DOCKER_IP
+```
 
-4) Install docker registry when using Docker on MAcOS with boot2docker
+4) Install a docker registry when using Docker with boot2docker or docker-machine as we have to push our build (= docker tar files) to a local registry
 
     docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
-5) Build and push the image of the Camel Web Example
+5) Build and push the image of the Camel Rest Example
 
-    docker run -it -p 8080:8080 -p 8778:8778 --name camel-web-microservice 192.168.99.100:5000/fabric8/web:1.0-SNAPSHOT
+    docker run -it -p 8080:8080 -p 8778:8778 --name camel-rest-microservice 192.168.99.100:5000/fabric8/rest:1.0-SNAPSHOT
 
 6) Find IP address of the docker container
 
-    docker ps --filter="name=web" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
+    docker ps --filter="name=rest" | awk '{print $1}' | xargs docker inspect | grep "IPAddress"
 
 7)  Change the url of the camel CDI Route to point to this Hostname
 
-    @Uri("netty4-http:http://172.17.0.5:8080/camel/hello?keepalive=false&disconnect=true")
-
-8) Use the fabric8/S2-i image instead of the fabric8/java image
-
-    <docker.from>fabric8/s2i-java:1.2</docker.from>
+    @Uri("netty4-http:http://DOCKER_CONTAINER_IPADDRESS:8080/camel/hello?keepalive=false&disconnect=true")
 
 9) Build the Image of the Camel CDI and create the docker container
 
     mvn clean install docker:build
 
     docker run -it --name camel-cdi-microservice 192.168.99.100:5000/fabric8/cdi:1.0-SNAPSHOT
-
-    OR use the Camel Rest Service
-
-    docker run -it --name camel-rest-microservice -p 8080:8080 -p 8778:8778 192.168.99.100:5000/fabric8/rest:1.0-SNAPSHOT
 
 10) Connect to the Tomcat console and add the hawtio war
 
@@ -93,7 +101,7 @@ Remarks:
 
 11) You can access now to your Camel routes
 
-   http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
+    http://172.17.0.7:8080/hawtio-default-1.4.59/welcome
 
 12) Use the Camel CDI Rest client
 
