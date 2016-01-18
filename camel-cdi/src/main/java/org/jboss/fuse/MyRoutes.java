@@ -19,7 +19,7 @@ public class MyRoutes extends RouteBuilder {
 
     @Inject
     //@Uri("netty4-http:http://localhost:8080/myweb/camel/hello?keepalive=false&disconnect=true")
-    @Uri("netty4-http:http://172.17.0.5:8080/camel/hello?keepalive=false&disconnect=true")
+    @Uri("netty4-http:http://172.17.0.4:8080/camel/hello?keepalive=false&disconnect=true")
     private Endpoint httpEndpoint;
 
     @Inject

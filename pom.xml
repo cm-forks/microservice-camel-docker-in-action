@@ -10,5 +10,6 @@
     <modules>
         <module>camel-web</module>
         <module>camel-cdi</module>
+        <module>camel-rest</module>
     </modules>
 </project>

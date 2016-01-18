@@ -13,7 +13,7 @@
     <docker.maven.plugin.version>0.13.6</docker.maven.plugin.version>
 
     <docker.assemblyDescriptorRef>rootWar</docker.assemblyDescriptorRef>
-    <docker.from>docker.io/fabric8/tomcat-8.0</docker.from>
+    <docker.from>docker.io/fabric8/tomcat-8</docker.from>
     <docker.image>${docker.registryPrefix}fabric8/${project.artifactId}:${project.version}</docker.image>
     <docker.port.container.http>8080</docker.port.container.http>
     <docker.port.container.jolokia>8778</docker.port.container.jolokia>
