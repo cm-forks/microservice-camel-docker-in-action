@@ -1,6 +1,6 @@
 # INSTRUCTIONS
 
-The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one containing the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
+The MicroService Camel REST in action project consists of 2 maven modules `camel-rest-client` and `camel-rest-service`; one contain the code to play the role of a client sending HTTP requests and calling a REST Service exposed by another
 project. They both will be created as Microservice as they will be able to run into their own JVM, Container, without any ESB Bus, will be managed separately and independently.
 
 # Project creation
@@ -21,7 +21,7 @@ with these parameters
 Detail to be used to set the maven archetype
 
 ```
-Project : camel-cdi-rest
+Project : camel-rest-client
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
 ```
@@ -101,27 +101,18 @@ public class SomeBean {
     }
 ```
 
-The detail to be used to set the maven archetype is defined hereafter:
-
-```
-Project : camel-cdi-rest
-Package : org.jboss.fuse
-Version: 1.0-SNAPSHOT
-```
-
 The next project will be designed using the camel web archetype which is a Servlet Tomcat application and will be used to expose using the Camel REST DSL
 a REST service to get a User Hello Message.
+
+The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message wil lbe returned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
+
+The detail to be used to set the maven archetype is defined hereafter:
+
 
 ```
 mvn archetype:generate
 51: remote -> io.fabric8.archetypes:war-camel-servlet-archetype (Creates a new Camel route using Servlet deployed as WAR)
-```
 
-The REST GET Service is defined as such : `/camel/users/${id_of_the_user}/hello` and this message wil lbe reurned '"Hello " + id + "! Welcome from pod/docker host : " + System.getenv("HOSTNAME")'
-
-The detail to be used to set the maven archetype is defined hereafter:
-
-```
 Project : camel-rest
 Package : org.jboss.fuse
 Version: 1.0-SNAPSHOT
