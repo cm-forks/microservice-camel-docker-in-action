@@ -11,9 +11,9 @@ project. They both will be created as Microservice as they will be able to run i
 
 ```
 mvn archetype:generate
-
+...
 19: remote -> io.fabric8.archetypes:cdi-camel-http-archetype (Creates a new Camel route using CDI in a standalone Java Container calling the remote camel-servlet quickstart))
-
+...
 Using these parameters
 
 Archetype Version : 2.2.88
@@ -36,13 +36,13 @@ public class MyRoutes extends RouteBuilder {
 
     @Inject
     /** Local **/
-    //@Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
+    @Uri("netty4-http:http://localhost:8080?keepalive=false&disconnect=true")
 
     /** Docker Container **/
-    // @Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
+    //@Uri("netty4-http:http://172.17.0.8:8080?keepalive=false&disconnect=true")
 
     /** Pod Container + Kubernetes Service  **/
-    @Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
+    //@Uri("netty4-http:http://{{service:hellorest}}?keepalive=false&disconnect=true")
     private Endpoint httpEndpoint;
 
     @Inject
@@ -436,5 +436,6 @@ oc delete services -l group=demo
 oc delete route -l group=demo
 oc delete rc -l group=demo
 ```
+Enjoy the Camel MicroService & MicroContainer !
 
 
